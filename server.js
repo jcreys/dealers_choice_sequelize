@@ -25,6 +25,7 @@ const Album = sequelize.define('album', {
 }); //build Album model
 
 Album.belongsTo(Artist);
+Artist.hasMany(Album);
 //express
 const express = require('express');
 const app = express();
@@ -60,6 +61,36 @@ app.get('/albums', async(req,res,next) => {
         next(ex);
     }
 });
+
+app.get('/artists/:id', async(req, res, next)=>{
+    try{
+        const artist = await Artist.findByPk(req.params.id, {
+            include: [ Album ]
+        });
+        const html = artist.albums.map( album => {
+            return `
+                <div>
+                    ${ album.name }
+                </div>
+            `;
+        }).join('');
+        res.send(`
+        <html>
+            <head>
+                <title> Albums </title>
+            </head>
+            <body>
+                <h1>${artist.name}</h1>
+                <a href='/albums'>Back</a>
+            </body>
+        </html>
+        `);
+    }
+    catch(ex){
+        next(ex);
+    }
+
+})
 
 const start = async()=> {
     try{
