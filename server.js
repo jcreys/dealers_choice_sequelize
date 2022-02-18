@@ -81,6 +81,9 @@ app.get('/artists/:id', async(req, res, next)=>{
             </head>
             <body>
                 <h1>${artist.name}</h1>
+                <ul>
+                    <li>${html}</li>
+                </ul>
                 <a href='/albums'>Back</a>
             </body>
         </html>
